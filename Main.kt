@@ -44,25 +44,30 @@ Entrada 	            Resultado
  */
 
 
-fun main() {
-    val input = listOf(
-        listOf(0, 1, 5, 2, 0, 3, 9, -1),
-        listOf(5, 5, 4, -1),
-        listOf(1, 2, 3, 4, 5, -1),
-        listOf(-1)
-    )
+import java.util.Scanner
+import kotlin.math.abs
 
-    input.forEach { case ->
-        println(calculateElevatorJourney(case))
+fun main() {
+    val scanner = Scanner(System.`in`)
+//Crea una secuencia que lee todas las líneas de entrada.
+    val lineasEntrada = generateSequence { if (scanner.hasNextLine()) scanner.nextLine() else null }
+//Filtra las líneas hasta que encuentre una línea con -1
+        .takeWhile { it != "-1" }
+        .toList()
+//Itera sobre cada línea de entrada
+    lineasEntrada.forEach { linea ->
+//Convierte la línea leída en una lista de enteros.
+        val caso = linea.split(" ").map { it.toInt() }
+//Calcula y muestra el recorrido del ascensor para el caso proporcionado.
+        println(calcularRecorridoAscensor(caso))
     }
 }
 
-fun calculateElevatorJourney(journey: List<Int>): Int {
-    if (journey.first() == -1) return 0
-
-    return journey
-        .takeWhile { it != -1 }
-        .windowed(2, 2, false)
-        .map { (start, end) -> Math.abs(start - end) }
-        .sum()
+fun calcularRecorridoAscensor(recorrido: List<Int>): Int {
+    if (recorrido.first() == -1) return 0
+//lista de todos los elementos hasta -1 no incluido
+    val pisos = recorrido.takeWhile { it != -1 }
+//Crea pares de elementos consecutivos y calcula la distancia absoluta entre ellos.
+    val movimientos = pisos.zipWithNext { a, b -> abs(a - b) }
+    return movimientos.sum() //devuelve la suma
 }
